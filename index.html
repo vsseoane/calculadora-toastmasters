@@ -6,168 +6,134 @@
 <title>Calculadora de cuota · Valencia Toastmasters</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,600;0,800;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --loyal:#004165;      /* Toastmasters Loyal Blue */
-    --crimson:#772432;    /* True Maroon */
-    --happy:#F2DF74;      /* Happy Yellow */
-    --paper:#FAFAF7;
+    --loyal:#004165;
+    --crimson:#772432;
+    --happy:#F2DF74;
     --ink:#12232B;
     --line:#DDE2E4;
+    --muted:#5C6B72;
   }
   *{box-sizing:border-box}
-  html{-webkit-text-size-adjust:100%}
+  html,body{margin:0;padding:0}
   body{
-    margin:0;
-    background:var(--paper);
+    background:transparent;
     color:var(--ink);
     font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
-    font-size:16px;
-    line-height:1.55;
+    font-size:15px;
+    line-height:1.45;
   }
-  .wrap{max-width:640px;margin:0 auto;padding:24px 20px 56px}
+  .wrap{max-width:720px;margin:0 auto;padding:10px 12px 12px}
 
-  /* ---- Selector de idioma ---- */
-  .lang{display:flex;justify-content:flex-end;margin:0 0 12px}
-  .lang div{
-    display:inline-flex;border:1px solid var(--line);border-radius:999px;
-    background:#fff;overflow:hidden;
+  /* ---- Barra superior: idioma ---- */
+  .top{display:flex;justify-content:flex-end;margin:0 0 8px}
+  .top div{display:inline-flex;border:1px solid var(--line);border-radius:999px;background:#fff;overflow:hidden}
+  .top button{
+    font:inherit;font-size:.72rem;font-weight:600;letter-spacing:.03em;
+    padding:4px 11px;border:0;background:transparent;color:var(--muted);cursor:pointer;
   }
-  .lang button{
-    font:inherit;font-size:.8rem;font-weight:600;letter-spacing:.03em;
-    padding:6px 14px;border:0;background:transparent;color:#5C6B72;cursor:pointer;
-  }
-  .lang button[aria-pressed="true"]{background:var(--loyal);color:#fff}
-  .lang button:focus-visible{outline:3px solid var(--happy);outline-offset:-3px}
+  .top button[aria-pressed="true"]{background:var(--loyal);color:#fff}
+  .top button:focus-visible{outline:2px solid var(--happy);outline-offset:-2px}
 
-  /* ---- Cabecera: el importe es el héroe ---- */
-  .stage{
-    background:var(--loyal);
-    color:#fff;
-    border-radius:14px;
-    padding:28px 26px 24px;
-    position:relative;
-    overflow:hidden;
-  }
-  .stage::after{
-    content:"";position:absolute;left:0;right:0;bottom:0;height:6px;
-    background:linear-gradient(90deg,var(--happy) 0 62%,var(--crimson) 62% 100%);
-  }
-  .stage h1{
-    margin:0 0 18px;
-    font-family:Bitter,Georgia,serif;
-    font-weight:600;
-    font-size:1.05rem;
-    letter-spacing:.005em;
-    color:#CFE0EA;
-  }
-  .amount{
-    font-family:Bitter,Georgia,serif;
-    font-weight:800;
-    font-size:clamp(3.4rem,15vw,5rem);
-    line-height:.92;
-    letter-spacing:-.02em;
-    display:flex;
-    align-items:baseline;
-    gap:.12em;
-    margin:0;
-  }
-  .amount .cur{font-size:.42em;font-weight:600;color:var(--happy)}
-  .valid{margin:14px 0 0;font-size:.95rem;color:#CFE0EA;max-width:44ch}
-  .valid b{color:#fff;font-weight:600}
-  .breakdown{
-    margin:16px 0 0;padding:14px 0 0;border-top:1px solid rgba(255,255,255,.22);
-    font-size:.9rem;color:#CFE0EA;
-  }
-  .breakdown div{display:flex;justify-content:space-between;gap:16px;padding:2px 0}
-  .breakdown .waived{color:var(--happy)}
+  /* ---- Dos columnas ---- */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
 
-  /* ---- Controles ---- */
-  form{margin:28px 0 0}
-  fieldset{border:0;margin:0 0 24px;padding:0}
-  legend{
-    font-family:Bitter,Georgia,serif;
-    font-weight:600;font-size:1rem;
-    padding:0;margin:0 0 10px;
-  }
+  /* Izquierda: controles */
+  .controls > * + *{margin-top:11px}
+  .lbl{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin:0 0 5px}
   select{
-    width:100%;padding:13px 14px;font:inherit;color:inherit;
-    background:#fff;border:1px solid var(--line);border-radius:9px;
+    width:100%;padding:9px 11px;font:inherit;font-size:.95rem;color:inherit;
+    background:#fff;border:1px solid var(--line);border-radius:8px;
   }
-  .choice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .choice{display:grid;grid-template-columns:1fr 1fr;gap:7px}
   .choice label{
-    display:block;padding:14px;border:1px solid var(--line);border-radius:9px;
-    background:#fff;cursor:pointer;
+    display:block;padding:8px 9px;border:1px solid var(--line);border-radius:8px;
+    background:#fff;cursor:pointer;text-align:center;
   }
   .choice input{position:absolute;opacity:0;width:0;height:0}
-  .choice label:has(input:checked){
-    border-color:var(--loyal);box-shadow:inset 0 0 0 1px var(--loyal);
-  }
-  .choice label:has(input:focus-visible){outline:3px solid var(--happy);outline-offset:2px}
-  .choice .name{font-weight:600;display:block}
-  .choice .sub{font-size:.85rem;color:#5C6B72}
+  .choice label:has(input:checked){border-color:var(--loyal);box-shadow:inset 0 0 0 1px var(--loyal)}
+  .choice .name{font-weight:600;display:block;font-size:.9rem;line-height:1.2}
+  .choice .sub{font-size:.72rem;color:var(--muted)}
   .prior{
-    display:flex;gap:12px;align-items:flex-start;padding:16px;
-    background:#fff;border:1px solid var(--line);border-radius:9px;cursor:pointer;
+    display:flex;gap:9px;align-items:flex-start;padding:10px;
+    background:#fff;border:1px solid var(--line);border-radius:8px;cursor:pointer;
+    font-size:.85rem;
   }
-  .prior input{margin:3px 0 0;width:18px;height:18px;flex:none;accent-color:var(--loyal)}
-  .prior .sub{font-size:.85rem;color:#5C6B72;display:block;margin-top:2px}
-  select:focus-visible,.prior:has(input:focus-visible){outline:3px solid var(--happy);outline-offset:2px}
+  .prior input{margin:1px 0 0;width:16px;height:16px;flex:none;accent-color:var(--loyal)}
+  .prior .sub{font-size:.72rem;color:var(--muted);display:block;line-height:1.35}
+  select:focus-visible,.choice label:has(input:focus-visible),.prior:has(input:focus-visible){
+    outline:2px solid var(--happy);outline-offset:2px;
+  }
 
-  .note{
-    margin:26px 0 0;padding:16px 18px;border-left:4px solid var(--happy);
-    background:#fff;font-size:.9rem;color:#41525A;border-radius:0 9px 9px 0;
+  /* Derecha: resultado */
+  .stage{
+    background:var(--loyal);color:#fff;border-radius:12px;
+    padding:16px 18px 15px;position:relative;overflow:hidden;
   }
-  .note p{margin:0 0 8px}
-  .note p:last-child{margin:0}
-  @media (max-width:420px){.choice{grid-template-columns:1fr}}
+  .stage::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:4px;
+    background:linear-gradient(90deg,var(--happy) 0 62%,var(--crimson) 62% 100%);
+  }
+  .stage h1{margin:0 0 6px;font-size:.76rem;font-weight:600;color:#BCD3E2;letter-spacing:.01em}
+  .amount{
+    font-family:Bitter,Georgia,serif;font-weight:800;
+    font-size:clamp(2.5rem,7vw,3.1rem);line-height:1;letter-spacing:-.02em;
+    display:flex;align-items:baseline;gap:.1em;margin:0;
+  }
+  .amount .cur{font-size:.4em;font-weight:600;color:var(--happy)}
+  .valid{margin:8px 0 0;font-size:.8rem;color:#BCD3E2}
+  .valid b{color:#fff;font-weight:600}
+  .breakdown{margin:10px 0 0;padding:9px 0 0;border-top:1px solid rgba(255,255,255,.22);font-size:.75rem;color:#BCD3E2}
+  .breakdown div{display:flex;justify-content:space-between;gap:10px;padding:1px 0}
+  .breakdown .waived{color:var(--happy)}
+
+  /* Pie */
+  .note{
+    margin:12px 0 0;font-size:.73rem;color:var(--muted);line-height:1.4;
+    border-left:3px solid var(--happy);padding:0 0 0 10px;
+  }
+  .note p{margin:0}
+  .note p + p{margin-top:4px}
+
+  @media (max-width:560px){
+    .grid{grid-template-columns:1fr}
+    .stage{order:-1}
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <nav class="lang">
+  <nav class="top">
     <div>
       <button type="button" data-lang="es" aria-pressed="true">ES</button>
       <button type="button" data-lang="en" aria-pressed="false">EN</button>
     </div>
   </nav>
 
-  <section class="stage" aria-live="polite">
-    <h1 id="heading"></h1>
-    <p class="amount"><span class="cur">€</span><span id="total">160</span></p>
-    <p class="valid"><span id="coversPre"></span> <b id="months"></b><span id="coversMid"></span> <b id="until"></b>.</p>
-    <div class="breakdown">
-      <div><span id="baseLabel"></span><span id="base"></span></div>
-      <div id="feeRow"><span id="feeLabel"></span><span id="fee"></span></div>
-    </div>
-  </section>
-
-  <form>
-    <fieldset>
-      <legend><label for="month" id="lgMonth"></label></legend>
-      <select id="month"></select>
-    </fieldset>
-
-    <fieldset>
-      <legend id="lgPlan"></legend>
-      <div class="choice">
-        <label>
-          <input type="radio" name="plan" value="annual" checked>
-          <span class="name" id="planAName"></span>
-          <span class="sub" id="planASub"></span>
-        </label>
-        <label>
-          <input type="radio" name="plan" value="semester">
-          <span class="name" id="planSName"></span>
-          <span class="sub" id="planSSub"></span>
-        </label>
+  <div class="grid">
+    <div class="controls">
+      <div>
+        <label class="lbl" for="month" id="lgMonth"></label>
+        <select id="month"></select>
       </div>
-    </fieldset>
-
-    <fieldset>
-      <legend id="lgPrior"></legend>
+      <div>
+        <span class="lbl" id="lgPlan"></span>
+        <div class="choice">
+          <label>
+            <input type="radio" name="plan" value="annual" checked>
+            <span class="name" id="planAName"></span>
+            <span class="sub" id="planASub"></span>
+          </label>
+          <label>
+            <input type="radio" name="plan" value="semester">
+            <span class="name" id="planSName"></span>
+            <span class="sub" id="planSSub"></span>
+          </label>
+        </div>
+      </div>
       <label class="prior">
         <input type="checkbox" id="prior">
         <span>
@@ -175,13 +141,22 @@
           <span class="sub" id="priorSub"></span>
         </span>
       </label>
-    </fieldset>
-  </form>
+    </div>
+
+    <section class="stage" aria-live="polite">
+      <h1 id="heading"></h1>
+      <p class="amount"><span class="cur">€</span><span id="total">160</span></p>
+      <p class="valid"><span id="coversPre"></span> <b id="months"></b><span id="coversMid"></span> <b id="until"></b>.</p>
+      <div class="breakdown">
+        <div><span id="baseLabel"></span><span id="base"></span></div>
+        <div id="feeRow"><span id="feeLabel"></span><span id="fee"></span></div>
+      </div>
+    </section>
+  </div>
 
   <div class="note">
     <p id="note1"></p>
     <p id="note2"></p>
-    <p id="note3"></p>
   </div>
 
 </div>
@@ -189,7 +164,6 @@
 <script>
 (function(){
   const ANNUAL = 140, SEMESTER = 75, SETUP = 20;
-  // Meses que quedan hasta el cierre del ciclo, contando el mes de ingreso.
   const REMAINING = {10:6, 11:5, 12:4, 1:3, 2:2, 3:1, 4:6, 5:5, 6:4, 7:3, 8:2, 9:1};
   const ORDER = [10,11,12,1,2,3,4,5,6,7,8,9];
 
@@ -202,20 +176,18 @@
       coversPre:"Cubre", coversMid:", hasta el",
       month: n => n === 1 ? "1 mes" : n + " meses",
       sep30:"30 de septiembre", mar31:"31 de marzo",
-      baseA:"Membresía anual", baseS:"Membresía semestral",
-      ofMonths:(a,b)=>" ("+a+" de "+b+" meses)",
+      baseA:"Anual", baseS:"Semestral",
+      ofMonths:(a,b)=>" ("+a+"/"+b+" meses)",
       money: v => v + " €",
       feeLabel:"Tasa de ingreso, pago único", feeNone:"no aplica",
       lgMonth:"¿En qué mes te unís?",
       lgPlan:"¿Cómo querés pagar?",
-      planAName:"Anual", planASub:"140 € el año completo",
+      planAName:"Anual", planASub:"140 € el año",
       planSName:"Semestral", planSSub:"75 € el semestre",
-      lgPrior:"Tu historial en Toastmasters",
       priorName:"Ya fui socio de Toastmasters",
-      priorSub:"En cualquier club del mundo, en cualquier momento. Te ahorrás la tasa de ingreso de 20 €.",
-      note1:"Los ciclos de inscripción van de octubre a marzo y de abril a septiembre. Si entrás con el ciclo empezado pagás solo los meses que quedan hasta la renovación, así que la cuota baja mes a mes.",
-      note2:"La tasa de ingreso de 20 € no se prorratea y se paga una sola vez. Al renovar pagarás 140 € por año o 75 € por semestre.",
-      note3:"Alrededor del 90 % de la cuota va a Toastmasters International; el 10 % restante sostiene a nuestro club local."
+      priorSub:"En cualquier club del mundo. Te ahorrás la tasa de 20 €.",
+      note1:"Los ciclos van de octubre a marzo y de abril a septiembre. Si entrás empezado el ciclo pagás solo los meses que quedan, por eso la cuota baja mes a mes.",
+      note2:"La tasa de 20 € se paga una sola vez y no se prorratea. Al renovar: 140 € al año o 75 € por semestre. Cerca del 90 % va a Toastmasters International y el 10 % al club local."
     },
     en: {
       docTitle:"Membership fee calculator · Valencia Toastmasters",
@@ -225,20 +197,18 @@
       coversPre:"Covers", coversMid:", through",
       month: n => n === 1 ? "1 month" : n + " months",
       sep30:"30 September", mar31:"31 March",
-      baseA:"Yearly membership", baseS:"Half-yearly membership",
-      ofMonths:(a,b)=>" ("+a+" of "+b+" months)",
+      baseA:"Annual", baseS:"Semester",
+      ofMonths:(a,b)=>" ("+a+"/"+b+" months)",
       money: v => "€" + v,
       feeLabel:"Setup fee, paid once", feeNone:"does not apply",
       lgMonth:"Which month are you joining?",
       lgPlan:"How would you like to pay?",
-      planAName:"Yearly", planASub:"€140 for the full year",
-      planSName:"Half-yearly", planSSub:"€75 per semester",
-      lgPrior:"Your Toastmasters history",
-      priorName:"I have been a Toastmasters member before",
-      priorSub:"Any club, anywhere, at any time. The €20 setup fee does not apply to you.",
-      note1:"Membership runs in two cycles: October to March, and April to September. Join once a cycle has started and you pay only for the months left until renewal, so the fee drops month by month.",
-      note2:"The €20 setup fee is charged once and is never prorated. When you renew, you pay €140 per year or €75 per semester.",
-      note3:"Roughly 90% of the fee goes to Toastmasters International; the remaining 10% supports our local club."
+      planAName:"Annual", planASub:"€140 a year",
+      planSName:"Semester", planSSub:"€75 a semester",
+      priorName:"I've been a Toastmasters member before",
+      priorSub:"Any club, anywhere. The €20 setup fee doesn't apply.",
+      note1:"Cycles run October to March and April to September. Join once a cycle has started and you pay only for the months left, so the fee drops month by month.",
+      note2:"The €20 setup fee is charged once and is never prorated. On renewal: €140 a year or €75 a semester. Around 90% goes to Toastmasters International and 10% supports the local club."
     }
   };
 
@@ -252,8 +222,7 @@
     monthSel.innerHTML = "";
     ORDER.forEach(m => {
       const o = document.createElement("option");
-      o.value = m;
-      o.textContent = t.monthsCap[m];
+      o.value = m; o.textContent = t.monthsCap[m];
       monthSel.appendChild(o);
     });
     monthSel.value = keep;
@@ -263,14 +232,12 @@
     const t = T[lang];
     const m = parseInt(monthSel.value, 10);
     const annual = document.querySelector('input[name="plan"]:checked').value === "annual";
-    const firstHalf = m >= 10 || m <= 3;            // ciclo octubre → marzo
+    const firstHalf = m >= 10 || m <= 3;
     const months = annual ? REMAINING[m] + 6 : REMAINING[m];
     const span = annual ? 12 : 6;
     const base = Math.round((annual ? ANNUAL : SEMESTER) * months / span);
     const fee = priorBox.checked ? 0 : SETUP;
-    const until = annual
-      ? (firstHalf ? t.sep30 : t.mar31)
-      : (firstHalf ? t.mar31 : t.sep30);
+    const until = annual ? (firstHalf ? t.sep30 : t.mar31) : (firstHalf ? t.mar31 : t.sep30);
 
     el("total").textContent = base + fee;
     el("heading").textContent = t.heading(t.months[m]);
@@ -295,20 +262,18 @@
     el("planASub").textContent = t.planASub;
     el("planSName").textContent = t.planSName;
     el("planSSub").textContent = t.planSSub;
-    el("lgPrior").textContent = t.lgPrior;
     el("priorName").textContent = t.priorName;
     el("priorSub").textContent = t.priorSub;
     el("note1").textContent = t.note1;
     el("note2").textContent = t.note2;
-    el("note3").textContent = t.note3;
     buildMonths();
     render();
   }
 
-  document.querySelectorAll(".lang button").forEach(b => {
+  document.querySelectorAll(".top button").forEach(b => {
     b.addEventListener("click", () => {
       lang = b.dataset.lang;
-      document.querySelectorAll(".lang button").forEach(x =>
+      document.querySelectorAll(".top button").forEach(x =>
         x.setAttribute("aria-pressed", String(x === b)));
       applyLang();
     });
@@ -318,10 +283,9 @@
   priorBox.addEventListener("change", render);
   document.querySelectorAll('input[name="plan"]').forEach(r => r.addEventListener("change", render));
 
-  // Idioma inicial: español, salvo que el navegador esté en inglés.
   if ((navigator.language || "").toLowerCase().startsWith("en")) {
     lang = "en";
-    document.querySelectorAll(".lang button").forEach(x =>
+    document.querySelectorAll(".top button").forEach(x =>
       x.setAttribute("aria-pressed", String(x.dataset.lang === "en")));
   }
   monthSel.value = String(new Date().getMonth() + 1);
