@@ -1,3 +1,95 @@
+
+Claude finished the response
+Fetched: calculadora-toastmasters/index.html at main · vsseoane/calculadora-toastmasters
+Perfecto, ya lo vi. Los precios están hardcodeados en dos objetos, así que el cambio real son dos líneas. Todo lo demás (el descuento de 20 €, las fechas de validez, el ciclo) ya funciona bien y no hay que tocarlo.
+
+En index.html, líneas ~200-201:
+
+javascript
+// ANTES
+var anual = {10:150,11:139,12:128,1:118,2:107,3:96,4:150,5:139,6:128,7:118,8:107,9:96};
+var sem   = {10:90,11:78,12:67,1:55,2:43,3:32,4:90,5:78,6:67,7:55,8:43,9:32};
+
+// DESPUÉS
+var anual = {10:160,11:148,12:137,1:125,2:113,3:102,4:160,5:148,6:137,7:125,8:113,9:102};
+var sem   = {10:95,11:83,12:70,1:58,2:45,3:33,4:95,5:83,6:70,7:58,8:45,9:33};
+Con eso queda idéntico a la tabla de Notion, con los redondeos hacia arriba en 83 € y 33 €.
+
+Dos cosas menores que aprovecharía ya que vas a tocar el archivo:
+
+1. El selector arranca fijo en septiembre. En la línea del <option value="9" selected>, sacá el selected y agregá esto justo antes del render(); final:
+
+javascript
+mes.value = String(new Date().getMonth() + 1);
+Así el visitante ve su mes real al abrir, en vez de tener que buscarlo.
+
+2. El botón dice "Sí (−20 €)" pero el resultado no muestra de dónde sale el total. Es menor, pero si alguien duda del importe antes de transferir, ver el desglose ayuda. La versión que te armé antes lo hace explícito; si preferís no cambiar el diseño, dejalo como está.
+
+Si querés, pasame el index.html ya editado y lo reviso antes del push, o hacé el cambio y verificamos juntos contra la tabla mes por mes.
+
+me gusto mucho mas la calculadora que acabas de sacar en la derecha
+
+Thought for 5s
+Explicando cómo publicar el archivo index.html en el repositorio.
+Thought for 5s
+Buenísimo. Entonces el camino es reemplazar el index.html del repo por ese. No necesitás clonar nada, se hace desde la web de GitHub:
+
+Abrí github.com/vsseoane/calculadora-toastmasters/blob/main/index.html y tocá el lápiz (Edit this file).
+Seleccioná todo el contenido (Ctrl/Cmd+A) y borralo.
+Pegá el contenido completo del archivo que te generé.
+Abajo, Commit changes con un mensaje tipo "Tarifa 2026-2027: base 140/75 + tasa de 20 € desglosada".
+Esperá uno o dos minutos a que GitHub Pages redespliegue y recargá el embed en Notion con Ctrl+Shift+R para saltear la caché.
+Antes de que lo pises, dos diferencias respecto de la versión actual que conviene decidir:
+
+Perdés la línea del 90/10. Tu versión tiene al pie "≈ 90 % de la cuota va a Toastmasters International · 10 % sostiene el club local". La mía no la trae, porque ese dato ya está como callout en la página de Notion justo debajo del embed. Si querés que la calculadora se sostenga sola (por si alguien la comparte suelta), te la agrego.
+
+Cambia el tono visual. La tuya es una tarjeta compacta con el precio como una fila más; la mía pone el importe grande arriba como lo primero que se ve, con el desglose debajo. En un embed dentro de Notion la mía ocupa bastante más alto vertical — puede que tengas que estirar el bloque del embed arrastrando el borde inferior.
+
+Decime si querés que le sume la nota del 90/10 o que compacte un poco la altura para que entre mejor en el embed, y te dejo el archivo final listo para pegar.
+
+cambia la calculadora para que este en ingles
+
+Ran a command, shared files
+Traducida. Los importes no cambiaron, solo el idioma de la interfaz.
+
+Algunas decisiones de traducción que vale la pena que revises, porque son las que más se notan con hablantes nativos:
+
+Usé Yearly / Half-yearly en vez de Annual / Semester. "Semester" en inglés suena a calendario académico, no a medio año de cuota. Si preferís que coincida palabra por palabra con el flyer bilingüe (que dice "Annual Membership" y "Semester Membership"), lo cambio.
+Setup fee, igual que el flyer, en vez de joining fee o entry fee.
+Fechas en formato británico sin coma (30 September, 31 March), que es lo habitual en Europa. Si tu audiencia es más americana, sería September 30.
+El símbolo de euro va delante del número (€140), que es la convención en inglés, al revés que en español.
+También agregué al pie la nota del 90/10 que tenía tu versión original, así la calculadora se sostiene sola si alguien la comparte fuera de Notion.
+
+Una pregunta antes de que hagas el push: ¿la querés solo en inglés o bilingüe con un botón ES/EN? El club es bilingüe y la página de Notion está en español, así que si el embed queda solo en inglés vas a tener la tabla en un idioma y la calculadora en otro justo al lado. Un toggle son unas 20 líneas más y resuelve las dos audiencias con un solo archivo.
+
+
+Index
+Code·HTML 
+billingue con un boton de ES/EN mostramelo en la derecha asi veo ocmo queda
+
+Ran a command, shared files
+Ahí la tenés, probá el botón ES/EN arriba a la derecha. Verifiqué los doce meses otra vez: siguen coincidiendo con la tabla de Notion.
+
+Cómo funciona el idioma:
+
+Arranca en español, salvo que el navegador del visitante esté en inglés — ahí abre en EN directamente. Eso cubre a los invitados internacionales sin que tengan que buscar el botón.
+El cambio es instantáneo y conserva lo que ya elegiste: si estabas en marzo con semestral y ex-miembro, seguís ahí, solo cambian las palabras.
+Cambia también el lang del documento y el <title>, así los lectores de pantalla y el buscador ven el idioma correcto.
+Un detalle deliberado: no guarda la preferencia entre visitas. Podría usar localStorage, pero dentro de un embed de Notion el almacenamiento de terceros suele estar bloqueado y quedaría un comportamiento inconsistente. Como la detección por navegador ya acierta la mayoría de las veces, preferí no meter esa complejidad. Si lo querés igual para cuando se abra fuera de Notion, son tres líneas.
+
+Lo único que cambiaría de la traducción, según a quién apunten: usé Yearly / Half-yearly en vez de Annual / Semester. Si preferís que calce exactamente con el flyer bilingüe, decímelo y lo alineo antes de que hagas el push.
+
+
+Index
+Code·HTML 
+
+Write a message…
+
+
+Claude is AI and can make mistakes. Please double-check responses.
+
+
+Index · HTML
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,7 +104,6 @@
     --loyal:#004165;      /* Toastmasters Loyal Blue */
     --crimson:#772432;    /* True Maroon */
     --happy:#F2DF74;      /* Happy Yellow */
-    --cool:#A9B2B1;       /* Cool Gray */
     --paper:#FAFAF7;
     --ink:#12232B;
     --line:#DDE2E4;
@@ -27,9 +118,22 @@
     font-size:16px;
     line-height:1.55;
   }
-  .wrap{max-width:640px;margin:0 auto;padding:32px 20px 56px}
-
-  /* ---- Encabezado: el importe es el héroe ---- */
+  .wrap{max-width:640px;margin:0 auto;padding:24px 20px 56px}
+ 
+  /* ---- Selector de idioma ---- */
+  .lang{display:flex;justify-content:flex-end;margin:0 0 12px}
+  .lang div{
+    display:inline-flex;border:1px solid var(--line);border-radius:999px;
+    background:#fff;overflow:hidden;
+  }
+  .lang button{
+    font:inherit;font-size:.8rem;font-weight:600;letter-spacing:.03em;
+    padding:6px 14px;border:0;background:transparent;color:#5C6B72;cursor:pointer;
+  }
+  .lang button[aria-pressed="true"]{background:var(--loyal);color:#fff}
+  .lang button:focus-visible{outline:3px solid var(--happy);outline-offset:-3px}
+ 
+  /* ---- Cabecera: el importe es el héroe ---- */
   .stage{
     background:var(--loyal);
     color:#fff;
@@ -38,7 +142,7 @@
     position:relative;
     overflow:hidden;
   }
-  .stage::after{ /* barra de acento inferior */
+  .stage::after{
     content:"";position:absolute;left:0;right:0;bottom:0;height:6px;
     background:linear-gradient(90deg,var(--happy) 0 62%,var(--crimson) 62% 100%);
   }
@@ -59,6 +163,7 @@
     display:flex;
     align-items:baseline;
     gap:.12em;
+    margin:0;
   }
   .amount .cur{font-size:.42em;font-weight:600;color:var(--happy)}
   .valid{margin:14px 0 0;font-size:.95rem;color:#CFE0EA;max-width:44ch}
@@ -69,7 +174,7 @@
   }
   .breakdown div{display:flex;justify-content:space-between;gap:16px;padding:2px 0}
   .breakdown .waived{color:var(--happy)}
-
+ 
   /* ---- Controles ---- */
   form{margin:28px 0 0}
   fieldset{border:0;margin:0 0 24px;padding:0}
@@ -101,128 +206,220 @@
   .prior input{margin:3px 0 0;width:18px;height:18px;flex:none;accent-color:var(--loyal)}
   .prior .sub{font-size:.85rem;color:#5C6B72;display:block;margin-top:2px}
   select:focus-visible,.prior:has(input:focus-visible){outline:3px solid var(--happy);outline-offset:2px}
-
+ 
   .note{
     margin:26px 0 0;padding:16px 18px;border-left:4px solid var(--happy);
     background:#fff;font-size:.9rem;color:#41525A;border-radius:0 9px 9px 0;
   }
   .note p{margin:0 0 8px}
   .note p:last-child{margin:0}
-  a{color:var(--loyal)}
   @media (max-width:420px){.choice{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="wrap">
-
+ 
+  <nav class="lang">
+    <div>
+      <button type="button" data-lang="es" aria-pressed="true">ES</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </nav>
+ 
   <section class="stage" aria-live="polite">
-    <h1>Tu cuota si te unís este mes</h1>
+    <h1 id="heading"></h1>
     <p class="amount"><span class="cur">€</span><span id="total">160</span></p>
-    <p class="valid">Cubre <b id="months">12 meses</b>, hasta el <b id="until">30 de septiembre</b>.</p>
+    <p class="valid"><span id="coversPre"></span> <b id="months"></b><span id="coversMid"></span> <b id="until"></b>.</p>
     <div class="breakdown">
-      <div><span id="baseLabel">Membresía anual (12 de 12 meses)</span><span id="base">140 €</span></div>
-      <div id="feeRow"><span>Tasa de ingreso, pago único</span><span id="fee">20 €</span></div>
+      <div><span id="baseLabel"></span><span id="base"></span></div>
+      <div id="feeRow"><span id="feeLabel"></span><span id="fee"></span></div>
     </div>
   </section>
-
+ 
   <form>
     <fieldset>
-      <legend><label for="month">¿En qué mes te unís?</label></legend>
-      <select id="month">
-        <option value="10">Octubre</option>
-        <option value="11">Noviembre</option>
-        <option value="12">Diciembre</option>
-        <option value="1">Enero</option>
-        <option value="2">Febrero</option>
-        <option value="3">Marzo</option>
-        <option value="4">Abril</option>
-        <option value="5">Mayo</option>
-        <option value="6">Junio</option>
-        <option value="7">Julio</option>
-        <option value="8">Agosto</option>
-        <option value="9">Septiembre</option>
-      </select>
+      <legend><label for="month" id="lgMonth"></label></legend>
+      <select id="month"></select>
     </fieldset>
-
+ 
     <fieldset>
-      <legend>¿Cómo querés pagar?</legend>
+      <legend id="lgPlan"></legend>
       <div class="choice">
         <label>
           <input type="radio" name="plan" value="annual" checked>
-          <span class="name">Anual</span>
-          <span class="sub">140 € el año completo</span>
+          <span class="name" id="planAName"></span>
+          <span class="sub" id="planASub"></span>
         </label>
         <label>
           <input type="radio" name="plan" value="semester">
-          <span class="name">Semestral</span>
-          <span class="sub">75 € el semestre</span>
+          <span class="name" id="planSName"></span>
+          <span class="sub" id="planSSub"></span>
         </label>
       </div>
     </fieldset>
-
+ 
     <fieldset>
-      <legend>Tu historial en Toastmasters</legend>
+      <legend id="lgPrior"></legend>
       <label class="prior">
         <input type="checkbox" id="prior">
         <span>
-          Ya fui socio de Toastmasters
-          <span class="sub">En cualquier club del mundo, en cualquier momento. Te ahorrás la tasa de ingreso de 20 €.</span>
+          <span id="priorName"></span>
+          <span class="sub" id="priorSub"></span>
         </span>
       </label>
     </fieldset>
   </form>
-
+ 
   <div class="note">
-    <p>Los ciclos de inscripción van de octubre a marzo y de abril a septiembre. Si entrás con el ciclo empezado pagás solo los meses que quedan hasta la renovación, así que la cuota baja mes a mes.</p>
-    <p>La tasa de ingreso de 20 € no se prorratea y se paga una sola vez. Al renovar pagarás 140 € por año o 75 € por semestre.</p>
+    <p id="note1"></p>
+    <p id="note2"></p>
+    <p id="note3"></p>
   </div>
-
+ 
 </div>
-
+ 
 <script>
 (function(){
   const ANNUAL = 140, SEMESTER = 75, SETUP = 20;
-  const MONTH_NAMES = {10:"octubre",11:"noviembre",12:"diciembre",1:"enero",2:"febrero",3:"marzo",4:"abril",5:"mayo",6:"junio",7:"julio",8:"agosto",9:"septiembre"};
-  // Meses restantes hasta el cierre del ciclo, contando el mes de ingreso.
+  // Meses que quedan hasta el cierre del ciclo, contando el mes de ingreso.
   const REMAINING = {10:6, 11:5, 12:4, 1:3, 2:2, 3:1, 4:6, 5:5, 6:4, 7:3, 8:2, 9:1};
-
+  const ORDER = [10,11,12,1,2,3,4,5,6,7,8,9];
+ 
+  const T = {
+    es: {
+      docTitle:"Calculadora de cuota · Valencia Toastmasters",
+      months:["","enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"],
+      monthsCap:["","Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],
+      heading: m => "Tu cuota si te unís en " + m,
+      coversPre:"Cubre", coversMid:", hasta el",
+      month: n => n === 1 ? "1 mes" : n + " meses",
+      sep30:"30 de septiembre", mar31:"31 de marzo",
+      baseA:"Membresía anual", baseS:"Membresía semestral",
+      ofMonths:(a,b)=>" ("+a+" de "+b+" meses)",
+      money: v => v + " €",
+      feeLabel:"Tasa de ingreso, pago único", feeNone:"no aplica",
+      lgMonth:"¿En qué mes te unís?",
+      lgPlan:"¿Cómo querés pagar?",
+      planAName:"Anual", planASub:"140 € el año completo",
+      planSName:"Semestral", planSSub:"75 € el semestre",
+      lgPrior:"Tu historial en Toastmasters",
+      priorName:"Ya fui socio de Toastmasters",
+      priorSub:"En cualquier club del mundo, en cualquier momento. Te ahorrás la tasa de ingreso de 20 €.",
+      note1:"Los ciclos de inscripción van de octubre a marzo y de abril a septiembre. Si entrás con el ciclo empezado pagás solo los meses que quedan hasta la renovación, así que la cuota baja mes a mes.",
+      note2:"La tasa de ingreso de 20 € no se prorratea y se paga una sola vez. Al renovar pagarás 140 € por año o 75 € por semestre.",
+      note3:"Alrededor del 90 % de la cuota va a Toastmasters International; el 10 % restante sostiene a nuestro club local."
+    },
+    en: {
+      docTitle:"Membership fee calculator · Valencia Toastmasters",
+      months:["","January","February","March","April","May","June","July","August","September","October","November","December"],
+      monthsCap:["","January","February","March","April","May","June","July","August","September","October","November","December"],
+      heading: m => "What you pay if you join in " + m,
+      coversPre:"Covers", coversMid:", through",
+      month: n => n === 1 ? "1 month" : n + " months",
+      sep30:"30 September", mar31:"31 March",
+      baseA:"Yearly membership", baseS:"Half-yearly membership",
+      ofMonths:(a,b)=>" ("+a+" of "+b+" months)",
+      money: v => "€" + v,
+      feeLabel:"Setup fee, paid once", feeNone:"does not apply",
+      lgMonth:"Which month are you joining?",
+      lgPlan:"How would you like to pay?",
+      planAName:"Yearly", planASub:"€140 for the full year",
+      planSName:"Half-yearly", planSSub:"€75 per semester",
+      lgPrior:"Your Toastmasters history",
+      priorName:"I have been a Toastmasters member before",
+      priorSub:"Any club, anywhere, at any time. The €20 setup fee does not apply to you.",
+      note1:"Membership runs in two cycles: October to March, and April to September. Join once a cycle has started and you pay only for the months left until renewal, so the fee drops month by month.",
+      note2:"The €20 setup fee is charged once and is never prorated. When you renew, you pay €140 per year or €75 per semester.",
+      note3:"Roughly 90% of the fee goes to Toastmasters International; the remaining 10% supports our local club."
+    }
+  };
+ 
+  let lang = "es";
   const el = id => document.getElementById(id);
   const monthSel = el("month"), priorBox = el("prior");
-
+ 
+  function buildMonths(){
+    const t = T[lang];
+    const keep = monthSel.value || String(new Date().getMonth() + 1);
+    monthSel.innerHTML = "";
+    ORDER.forEach(m => {
+      const o = document.createElement("option");
+      o.value = m;
+      o.textContent = t.monthsCap[m];
+      monthSel.appendChild(o);
+    });
+    monthSel.value = keep;
+  }
+ 
   function render(){
+    const t = T[lang];
     const m = parseInt(monthSel.value, 10);
     const annual = document.querySelector('input[name="plan"]:checked').value === "annual";
     const firstHalf = m >= 10 || m <= 3;            // ciclo octubre → marzo
-    const semesterMonths = REMAINING[m];
-    const months = annual ? semesterMonths + 6 : semesterMonths;
+    const months = annual ? REMAINING[m] + 6 : REMAINING[m];
     const span = annual ? 12 : 6;
     const base = Math.round((annual ? ANNUAL : SEMESTER) * months / span);
     const fee = priorBox.checked ? 0 : SETUP;
-
-    // El anual siempre termina al cierre del ciclo opuesto; el semestral, al del ciclo en curso.
     const until = annual
-      ? (firstHalf ? "30 de septiembre" : "31 de marzo")
-      : (firstHalf ? "31 de marzo" : "30 de septiembre");
-
+      ? (firstHalf ? t.sep30 : t.mar31)
+      : (firstHalf ? t.mar31 : t.sep30);
+ 
     el("total").textContent = base + fee;
-    el("months").textContent = months === 1 ? "1 mes" : months + " meses";
+    el("heading").textContent = t.heading(t.months[m]);
+    el("coversPre").textContent = t.coversPre;
+    el("coversMid").textContent = t.coversMid;
+    el("months").textContent = t.month(months);
     el("until").textContent = until;
-    el("baseLabel").textContent = (annual ? "Membresía anual" : "Membresía semestral")
-      + " (" + months + " de " + span + " meses)";
-    el("base").textContent = base + " €";
-    el("fee").textContent = fee ? fee + " €" : "no aplica";
+    el("baseLabel").textContent = (annual ? t.baseA : t.baseS) + t.ofMonths(months, span);
+    el("base").textContent = t.money(base);
+    el("feeLabel").textContent = t.feeLabel;
+    el("fee").textContent = fee ? t.money(fee) : t.feeNone;
     el("feeRow").classList.toggle("waived", fee === 0);
-    document.querySelector(".stage h1").textContent = "Tu cuota si te unís en " + MONTH_NAMES[m];
   }
-
+ 
+  function applyLang(){
+    const t = T[lang];
+    document.documentElement.lang = lang;
+    document.title = t.docTitle;
+    el("lgMonth").textContent = t.lgMonth;
+    el("lgPlan").textContent = t.lgPlan;
+    el("planAName").textContent = t.planAName;
+    el("planASub").textContent = t.planASub;
+    el("planSName").textContent = t.planSName;
+    el("planSSub").textContent = t.planSSub;
+    el("lgPrior").textContent = t.lgPrior;
+    el("priorName").textContent = t.priorName;
+    el("priorSub").textContent = t.priorSub;
+    el("note1").textContent = t.note1;
+    el("note2").textContent = t.note2;
+    el("note3").textContent = t.note3;
+    buildMonths();
+    render();
+  }
+ 
+  document.querySelectorAll(".lang button").forEach(b => {
+    b.addEventListener("click", () => {
+      lang = b.dataset.lang;
+      document.querySelectorAll(".lang button").forEach(x =>
+        x.setAttribute("aria-pressed", String(x === b)));
+      applyLang();
+    });
+  });
+ 
   monthSel.addEventListener("change", render);
   priorBox.addEventListener("change", render);
   document.querySelectorAll('input[name="plan"]').forEach(r => r.addEventListener("change", render));
-
-  // Preselecciona el mes actual.
+ 
+  // Idioma inicial: español, salvo que el navegador esté en inglés.
+  if ((navigator.language || "").toLowerCase().startsWith("en")) {
+    lang = "en";
+    document.querySelectorAll(".lang button").forEach(x =>
+      x.setAttribute("aria-pressed", String(x.dataset.lang === "en")));
+  }
   monthSel.value = String(new Date().getMonth() + 1);
-  render();
+  applyLang();
 })();
 </script>
 </body>
 </html>
+ 
